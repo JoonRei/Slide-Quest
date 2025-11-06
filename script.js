@@ -24,14 +24,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let tiles = [];
     const solvedState = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-    const emptyTileIndex = 8; // The 9th tile (index 8) is empty
+    const emptyTileIndex = 8; // 9th tile is the blank
 
     // --- DRAG & SWIPE STATE ---
     let startX = 0;
     let startY = 0;
     let draggedTile = null;
 
-    // --- SCREEN MANAGEMENT ---
+    // --- SCREEN FLOW ---
     function showSplashScreen() {
         splashScreen.classList.remove('hidden');
         gameMenu.classList.add('hidden');
@@ -57,13 +57,13 @@ document.addEventListener('DOMContentLoaded', () => {
         gameMenu.classList.add('hidden');
         splashScreen.classList.add('hidden');
         if (tiles.length === 0) {
-            initGame(); 
+            initGame();
         } else {
             scramble();
         }
     }
 
-    // --- GAME SETUP FUNCTIONS ---
+    // --- GAME INITIALIZATION ---
     function createTile(index) {
         const tile = document.createElement('div');
         tile.classList.add('tile');
@@ -96,16 +96,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- CORE GAME LOGIC ---
+    // --- GAME LOGIC ---
     function swapTilesAndDraw(tile1PhysicalIndex, tile2PhysicalIndex) {
         [tiles[tile1PhysicalIndex], tiles[tile2PhysicalIndex]] = 
         [tiles[tile2PhysicalIndex], tiles[tile1PhysicalIndex]];
-
         drawBoard();
 
-        // Optional: vibration feedback on mobile
         if (navigator.vibrate) navigator.vibrate(40);
-
         checkWin();
     }
 
@@ -127,9 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
             element: createTile(originalIndex)
         }));
 
-        tiles.forEach(tile => {
-            board.appendChild(tile.element);
-        });
+        tiles.forEach(tile => board.appendChild(tile.element));
 
         let shuffles = 50;
         for (let i = 0; i < shuffles; i++) {
@@ -144,8 +139,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const randomNeighborIndex = neighbors[Math.floor(Math.random() * neighbors.length)];
             
             if (randomNeighborIndex >= 0 && randomNeighborIndex < tiles.length) {
-                 [tiles[emptyPhysicalIndex], tiles[randomNeighborIndex]] = 
-                 [tiles[randomNeighborIndex], tiles[emptyPhysicalIndex]];
+                [tiles[emptyPhysicalIndex], tiles[randomNeighborIndex]] = 
+                [tiles[randomNeighborIndex], tiles[emptyPhysicalIndex]];
             }
         }
         drawBoard(); 
@@ -153,9 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function checkWin() {
         for (let i = 0; i < tiles.length; i++) {
-            if (tiles[i].originalIndex !== i) {
-                return;
-            }
+            if (tiles[i].originalIndex !== i) return;
         }
         setTimeout(() => {
             alert('🎉 Congratulations! You solved it!');
@@ -163,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 300);
     }
 
-    // --- DRAG / SWIPE LOGIC ---
+    // --- DRAG / SWIPE HANDLERS ---
     function onDragStart(e) {
         const targetTileElement = e.target.closest('.tile');
         if (targetTileElement && !targetTileElement.classList.contains('empty')) {
@@ -212,55 +205,50 @@ document.addEventListener('DOMContentLoaded', () => {
         draggedTile = null;
     }
 
-   function handleSwipe(direction) {
-    const draggedPhysicalIndex = tiles.findIndex(t => t.originalIndex === draggedTile.originalIndex);
-    const emptyPhysicalIndex = tiles.findIndex(t => t.originalIndex === emptyTileIndex);
+    function handleSwipe(direction) {
+        const draggedPhysicalIndex = tiles.findIndex(t => t.originalIndex === draggedTile.originalIndex);
+        const emptyPhysicalIndex = tiles.findIndex(t => t.originalIndex === emptyTileIndex);
 
-    // Compute current row/col of both
-    const draggedRow = Math.floor(draggedPhysicalIndex / gridSize);
-    const draggedCol = draggedPhysicalIndex % gridSize;
-    const emptyRow = Math.floor(emptyPhysicalIndex / gridSize);
-    const emptyCol = emptyPhysicalIndex % gridSize;
+        // Convert to grid coordinates
+        const draggedRow = Math.floor(draggedPhysicalIndex / gridSize);
+        const draggedCol = draggedPhysicalIndex % gridSize;
+        const emptyRow = Math.floor(emptyPhysicalIndex / gridSize);
+        const emptyCol = emptyPhysicalIndex % gridSize;
 
-    // Check adjacency
-    const isLeft  = (draggedRow === emptyRow && draggedCol === emptyCol + 1);
-    const isRight = (draggedRow === emptyRow && draggedCol === emptyCol - 1);
-    const isUp    = (draggedCol === emptyCol && draggedRow === emptyRow + 1);
-    const isDown  = (draggedCol === emptyCol && draggedRow === emptyRow - 1);
+        // Check if they’re adjacent in the intended direction
+        const isLeft  = (draggedRow === emptyRow && draggedCol === emptyCol + 1);
+        const isRight = (draggedRow === emptyRow && draggedCol === emptyCol - 1);
+        const isUp    = (draggedCol === emptyCol && draggedRow === emptyRow + 1);
+        const isDown  = (draggedCol === emptyCol && draggedRow === emptyRow - 1);
 
-    // Apply the movement only if direction matches adjacency
-    if (direction === 'left' && isLeft) {
-        swapTilesAndDraw(draggedPhysicalIndex, emptyPhysicalIndex);
+        if (direction === 'left' && isLeft) {
+            swapTilesAndDraw(draggedPhysicalIndex, emptyPhysicalIndex);
+        }
+        else if (direction === 'right' && isRight) {
+            swapTilesAndDraw(draggedPhysicalIndex, emptyPhysicalIndex);
+        }
+        else if (direction === 'up' && isUp) {
+            swapTilesAndDraw(draggedPhysicalIndex, emptyPhysicalIndex);
+        }
+        else if (direction === 'down' && isDown) {
+            swapTilesAndDraw(draggedPhysicalIndex, emptyPhysicalIndex);
+        }
     }
-    else if (direction === 'right' && isRight) {
-        swapTilesAndDraw(draggedPhysicalIndex, emptyPhysicalIndex);
-    }
-    else if (direction === 'up' && isUp) {
-        swapTilesAndDraw(draggedPhysicalIndex, emptyPhysicalIndex);
-    }
-    else if (direction === 'down' && isDown) {
-        swapTilesAndDraw(draggedPhysicalIndex, emptyPhysicalIndex);
-    }
-}
 
-
-    // --- INITIALIZE ALL ---
+    // --- INIT ---
     function initGame() {
         scramble();
-
-        // Add drag/swipe listeners
         board.addEventListener('mousedown', onDragStart);
         board.addEventListener('touchstart', onDragStart, { passive: false });
         document.addEventListener('mouseup', onDragEnd);
         document.addEventListener('touchend', onDragEnd, { passive: true });
     }
 
-    // --- EVENT LISTENERS ---
+    // --- BUTTONS & MODALS ---
     startGameButton.addEventListener('click', showGame);
     shuffleButton.addEventListener('click', scramble);
     backToMenuButton.addEventListener('click', showGameMenu);
 
-    // --- MODAL EVENT LISTENERS ---
     howToPlayButton.addEventListener('click', () => modalOverlay.classList.add('active'));
     modalCloseButton.addEventListener('click', () => modalOverlay.classList.remove('active'));
     modalGotItButton.addEventListener('click', () => modalOverlay.classList.remove('active'));
@@ -268,7 +256,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (event.target === modalOverlay) modalOverlay.classList.remove('active');
     });
 
-    // Start by showing splash screen
+    // --- STARTUP ---
     showSplashScreen();
 });
-
