@@ -26,9 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const solvedState = [0, 1, 2, 3, 4, 5, 6, 7, 8];
     const emptyTileIndex = 8; // The 9th tile (index 8) is empty
 
-    // --- NEW: DRAG & SWIPE STATE ---
-    let startX = 0;
-    let startY = 0;
+    // --- DRAG/SWIPE STATE ---
     let draggedTile = null;
 
     // --- SCREEN MANAGEMENT ---
@@ -80,8 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const bgPosY = row * (100 / (gridSize - 1));
         
         tile.style.backgroundPosition = `${bgPosX}% ${bgPosY}%`;
-        
-        // REMOVED the 'click' listener
+        // No click listener, we use drag/touch events on the board
         return tile;
     }
 
@@ -101,7 +98,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- GAME LOGIC ---
 
-    // RENAMED: This is now the core swap function
     function swapTilesAndDraw(tile1PhysicalIndex, tile2PhysicalIndex) {
         [tiles[tile1PhysicalIndex], tiles[tile2PhysicalIndex]] = 
         [tiles[tile2PhysicalIndex], tiles[tile1PhysicalIndex]];
@@ -167,85 +163,38 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // --- NEW: SWIPE/DRAG EVENT HANDLERS ---
+    // --- SWIPE/DRAG EVENT HANDLERS (THE FIX) ---
 
     function onDragStart(e) {
-        // Find the tile element that was clicked
+        // Find the tile element that was touched
         const targetTileElement = e.target.closest('.tile');
 
+        // If it's a valid, non-empty tile, record it as the one being dragged
         if (targetTileElement && !targetTileElement.classList.contains('empty')) {
-            // Find this tile in our `tiles` array
             draggedTile = tiles.find(t => t.element === targetTileElement);
-            if (!draggedTile) return;
-
-            // Get start coordinates
-            if (e.type === 'mousedown') {
-                startX = e.clientX;
-                startY = e.clientY;
-            } else if (e.type === 'touchstart') {
-                startX = e.touches[0].clientX;
-                startY = e.touches[0].clientY;
-            }
-            e.preventDefault(); // Prevent text selection or image dragging
+            // Prevent default browser behavior (like scrolling or image drag)
+            e.preventDefault();
         }
     }
 
     function onDragEnd(e) {
-        if (!draggedTile) return; // We weren't dragging a valid tile
+        // If we aren't dragging a valid tile, do nothing
+        if (!draggedTile) return;
 
-        let endX = 0;
-        let endY = 0;
+        // We don't care about swipe direction.
+        // A completed drag/touch on a tile is an "intent to move".
 
-        // Get end coordinates
-        if (e.type === 'mouseup') {
-            endX = e.clientX;
-            endY = e.clientY;
-        } else if (e.type === 'touchend') {
-            endX = e.changedTouches[0].clientX;
-            endY = e.changedTouches[0].clientY;
-        }
-
-        // Calculate the difference
-        const diffX = endX - startX;
-        const diffY = endY - startY;
-        const swipeThreshold = 50; // Minimum pixels swiped to count
-
-        let direction = null;
-
-        // Check for horizontal swipe
-        if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > swipeThreshold) {
-            direction = (diffX > 0) ? 'right' : 'left';
-        } 
-        // Check for vertical swipe
-        else if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > swipeThreshold) {
-            direction = (diffY > 0) ? 'down' : 'up';
-        }
-
-        if (direction) {
-            handleSwipe(direction);
-        }
-
-        // Reset drag state
-        draggedTile = null;
-    }
-
-    function handleSwipe(direction) {
         const draggedPhysicalIndex = tiles.findIndex(t => t.originalIndex === draggedTile.originalIndex);
         const emptyPhysicalIndex = tiles.findIndex(t => t.originalIndex === emptyTileIndex);
 
-        // Check if the empty space is in the direction the user swiped
-        if (direction === 'left' && canMove(draggedPhysicalIndex, emptyPhysicalIndex) && emptyPhysicalIndex === draggedPhysicalIndex - 1) {
+        // Check: Can this tile move? (Is it adjacent to the empty space?)
+        if (canMove(draggedPhysicalIndex, emptyPhysicalIndex)) {
+            // Yes. Swap it.
             swapTilesAndDraw(draggedPhysicalIndex, emptyPhysicalIndex);
         }
-        else if (direction === 'right' && canMove(draggedPhysicalIndex, emptyPhysicalIndex) && emptyPhysicalIndex === draggedPhysicalIndex + 1) {
-            swapTilesAndDraw(draggedPhysicalIndex, emptyPhysicalIndex);
-        }
-        else if (direction === 'up' && canMove(draggedPhysicalIndex, emptyPhysicalIndex) && emptyPhysicalIndex === draggedPhysicalIndex - gridSize) {
-            swapTilesAndDraw(draggedPhysicalIndex, emptyPhysicalIndex);
-        }
-        else if (direction === 'down' && canMove(draggedPhysicalIndex, emptyPhysicalIndex) && emptyPhysicalIndex === draggedPhysicalIndex + gridSize) {
-            swapTilesAndDraw(draggedPhysicalIndex, emptyPhysicalIndex);
-        }
+        
+        // Reset drag state regardless of whether the move was valid
+        draggedTile = null;
     }
 
 
@@ -255,10 +204,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Add drag/swipe listeners to the board
         board.addEventListener('mousedown', onDragStart);
+        // { passive: false } is crucial to allow e.preventDefault() on touch screens
         board.addEventListener('touchstart', onDragStart, { passive: false });
 
         // Add listeners to the *whole window* for releasing the drag
-        // This catches cases where the user drags outside the board
         document.addEventListener('mouseup', onDragEnd);
         document.addEventListener('touchend', onDragEnd);
     }
