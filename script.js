@@ -26,10 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const solvedState = [0, 1, 2, 3, 4, 5, 6, 7, 8];
     const emptyTileIndex = 8; // The 9th tile (index 8) is empty
 
-    // --- SWIPE STATE ---
-    let startX = 0;
-    let startY = 0;
-    let draggedTile = null;
+    // --- TAP/TOUCH STATE ---
+    let touchedTile = null;
 
     // --- SCREEN MANAGEMENT ---
     function showSplashScreen() {
@@ -148,118 +146,63 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 300);
     }
 
-    // --- HYBRID SWIPE/TAP EVENT HANDLERS ---
+    // --- SIMPLIFIED TAP/CLICK EVENT HANDLERS ---
 
-    function onDragStart(e) {
-        // Find the tile element that was clicked
+    // When the user first presses down
+    function onPointerDown(e) {
         const targetTileElement = e.target.closest('.tile');
 
         if (targetTileElement && !targetTileElement.classList.contains('empty')) {
-            // Find this tile in our `tiles` array
-            draggedTile = tiles.find(t => t.element === targetTileElement);
-            if (!draggedTile) return;
-
-            // Get start coordinates
-            if (e.type === 'mousedown') {
-                startX = e.clientX;
-                startY = e.clientY;
-            } else if (e.type === 'touchstart') {
-                startX = e.touches[0].clientX;
-                startY = e.touches[0].clientY;
-            }
-            e.preventDefault(); // Prevent text selection or image dragging
+            // Store the tile they touched
+            touchedTile = tiles.find(t => t.element === targetTileElement);
         }
+        // Prevent default behavior (like text selection)
+        e.preventDefault();
     }
 
-    function onDragEnd(e) {
-        if (!draggedTile) return; // We weren't dragging a valid tile
+    // When the user lifts their finger/mouse
+    function onPointerUp(e) {
+        // If they didn't start on a valid tile, do nothing
+        if (!touchedTile) return;
 
-        let endX = 0;
-        let endY = 0;
-
-        // Get end coordinates
-        if (e.type === 'mouseup') {
-            endX = e.clientX;
-            endY = e.clientY;
-        } else if (e.type === 'touchend') {
-            if (e.changedTouches && e.changedTouches.length > 0) {
-                endX = e.changedTouches[0].clientX;
-                endY = e.changedTouches[0].clientY;
-            } else {
-                draggedTile = null;
-                return; // Not a valid touch end
-            }
+        // Check if the tile they *released* on is the same as the one they started on
+        // This confirms it was a "tap" or "click" and not a long drag off-screen
+        const targetTileElement = e.target.closest('.tile');
+        if (targetTileElement === touchedTile.element) {
+            // It's a valid tap! Handle the move.
+            handleMoveAttempt(touchedTile);
         }
 
-        // Calculate the difference
-        const diffX = endX - startX;
-        const diffY = endY - startY;
-        
-        // --- HYBRID LOGIC ---
-        const tapThreshold = 10; // If moved less than 10px, it's a tap
-        const swipeThreshold = 30; // If moved more than 30px, it's a swipe
-
-        if (Math.abs(diffX) < tapThreshold && Math.abs(diffY) < tapThreshold) {
-            // It's a TAP
-            handleTap();
-        } else {
-            // It's a SWIPE
-            let direction = null;
-
-            if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > swipeThreshold) {
-                direction = (diffX > 0) ? 'right' : 'left';
-            } else if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > swipeThreshold) {
-                direction = (diffY > 0) ? 'down' : 'up';
-            }
-
-            if (direction) {
-                handleSwipe(direction);
-            }
-        }
-
-        // Reset drag state
-        draggedTile = null;
+        // Reset the state for the next tap
+        touchedTile = null;
     }
 
-    function handleTap() {
-        const draggedPhysicalIndex = tiles.findIndex(t => t.originalIndex === draggedTile.originalIndex);
+    // This is the core logic you described
+    function handleMoveAttempt(tileToMove) {
+        const tappedPhysicalIndex = tiles.findIndex(t => t.originalIndex === tileToMove.originalIndex);
         const emptyPhysicalIndex = tiles.findIndex(t => t.originalIndex === emptyTileIndex);
 
-        if (canMove(draggedPhysicalIndex, emptyPhysicalIndex)) {
-            swapTilesAndDraw(draggedPhysicalIndex, emptyPhysicalIndex);
+        // Check: Can this tile move?
+        if (canMove(tappedPhysicalIndex, emptyPhysicalIndex)) {
+            // Yes. Swap it.
+            swapTilesAndDraw(tappedPhysicalIndex, emptyPhysicalIndex);
         }
+        // If not, nothing happens, just as you described.
     }
 
-    function handleSwipe(direction) {
-        const draggedPhysicalIndex = tiles.findIndex(t => t.originalIndex === draggedTile.originalIndex);
-        const emptyPhysicalIndex = tiles.findIndex(t => t.originalIndex === emptyTileIndex);
-
-        // Check if the swipe direction matches the empty space's location
-        if (direction === 'left' && emptyPhysicalIndex === draggedPhysicalIndex - 1) {
-            swapTilesAndDraw(draggedPhysicalIndex, emptyPhysicalIndex);
-        }
-        else if (direction === 'right' && emptyPhysicalIndex === draggedPhysicalIndex + 1) {
-            swapTilesAndDraw(draggedPhysicalIndex, emptyPhysicalIndex);
-        }
-        else if (direction === 'up' && emptyPhysicalIndex === draggedPhysicalIndex - gridSize) {
-            swapTilesAndDraw(draggedPhysicalIndex, emptyPhysicalIndex);
-        }
-        else if (direction === 'down' && emptyPhysicalIndex === draggedPhysicalIndex + gridSize) {
-            swapTilesAndDraw(draggedPhysicalIndex, emptyPhysicalIndex);
-        }
-    }
 
     // --- INITIALIZE ALL ---
     function initGame() {
         scramble();
 
-        // Add drag/swipe listeners to the board
-        board.addEventListener('mousedown', onDragStart);
-        board.addEventListener('touchstart', onDragStart, { passive: false });
+        // Add the new, simplified listeners to the board
+        // 'mousedown' is for desktop, 'touchstart' is for mobile
+        board.addEventListener('mousedown', onPointerDown);
+        board.addEventListener('touchstart', onPointerDown, { passive: false });
 
-        // Add listeners to the *whole window* for releasing the drag
-        document.addEventListener('mouseup', onDragEnd);
-        document.addEventListener('touchend', onDragEnd);
+        // 'mouseup' is for desktop, 'touchend' is for mobile
+        board.addEventListener('mouseup', onPointerUp);
+        board.addEventListener('touchend', onPointerUp);
     }
 
     // --- EVENT LISTENERS ---
