@@ -443,6 +443,34 @@ body {
     }
 }
 
+/* --- MOBILE-ONLY ADJUSTMENTS FOR WIN MODAL (Play Again) --- */
+@media (max-width: 480px) {
+    #win-modal-content {
+        width: 70%;             /* add space on left/right sides */
+        padding: 24px 20px;     /* tighter and balanced padding */
+        border-radius: 14px;    /* smoother corners for small screens */
+        max-width: none;        /* make sure it scales to screen width */
+    }
+
+    #win-modal-content h2 {
+        font-size: 1.3rem;      /* smaller title */
+        margin-bottom: 10px;
+    }
+
+    #win-modal-content p {
+        font-size: 0.9rem;      /* slightly smaller paragraph */
+        margin-bottom: 20px;
+    }
+
+    #play-again-button {
+        width: 100%;            /* full-width button for easier tapping */
+        padding: 12px 0;
+        font-size: 0.95rem;
+        border-radius: 10px;
+    }
+}
+
+
 /* --- ANIMATIONS --- */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
@@ -460,6 +488,7 @@ body {
         transform: scale(1);
     }
 }
+
 
 
 
