@@ -146,14 +146,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function checkWin() {
-        for (let i = 0; i < tiles.length; i++) {
-            if (tiles[i].originalIndex !== i) return;
-        }
-        setTimeout(() => {
-            alert('🎉 Congratulations! You solved it!');
-            showGameMenu(); 
-        }, 300);
+    for (let i = 0; i < tiles.length; i++) {
+        if (tiles[i].originalIndex !== i) return; // Not solved yet
     }
+
+    // Reveal the final (empty) piece
+    const emptyTile = tiles.find(t => t.originalIndex === emptyTileIndex);
+    if (emptyTile) {
+        const tile = emptyTile.element;
+        tile.classList.remove('empty');
+        tile.classList.add('reveal');
+        tile.style.backgroundImage = "url('image_eb39db.jpg')";
+        tile.style.backgroundSize = "300px 300px";
+
+        const col = emptyTileIndex % gridSize;
+        const row = Math.floor(emptyTileIndex / gridSize);
+        const bgPosX = col * (100 / (gridSize - 1));
+        const bgPosY = row * (100 / (gridSize - 1));
+        tile.style.backgroundPosition = `${bgPosX}% ${bgPosY}%`;
+    }
+
+    // Small delay for animation before showing popup
+    setTimeout(() => {
+        alert('🎉 Congratulations! You solved it!');
+        showGameMenu();
+    }, 1000); // allow time for the fade-in animation
+}
+
 
     // --- DRAG / SWIPE HANDLERS ---
     function onDragStart(e) {
@@ -258,4 +277,5 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- STARTUP ---
     showSplashScreen();
 });
+
 
