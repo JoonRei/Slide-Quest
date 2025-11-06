@@ -2,21 +2,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
 
 /* --- GLOBAL STYLES --- */
-html, body {
-    height: 100%;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    overflow: hidden; /* Prevent scrolling on mobile */
-}
-
 body {
     font-family: 'Nunito', sans-serif;
     background: linear-gradient(135deg, #4F9DFF 0%, #2B6EF2 100%);
     display: flex;
     justify-content: center;
     align-items: center;
-    color: #fff;
+    min-height: 100vh;
+    margin: 0;
+    color: #222;
+    overflow-x: hidden;
 }
 
 /* --- UTILITIES --- */
@@ -25,7 +20,10 @@ body {
 /* --- SPLASH SCREEN --- */
 #splash-screen {
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: linear-gradient(135deg, #4F9DFF, #2B6EF2);
     display: flex;
     justify-content: center;
@@ -36,8 +34,8 @@ body {
 #splash-screen.fade-out { opacity: 0; }
 
 #game-logo {
-    width: 180px;
-    height: 180px;
+    width: 200px;
+    height: 200px;
     animation: fadeInLogo 1.8s ease-out forwards;
 }
 @keyframes fadeInLogo {
@@ -45,7 +43,7 @@ body {
     to { opacity: 1; transform: scale(1); }
 }
 
-/* --- BUTTONS --- */
+/* --- BUTTON BASE STYLE --- */
 .btn {
     font-family: 'Nunito', sans-serif;
     font-size: 1rem;
@@ -61,11 +59,13 @@ body {
     transition: all 0.25s ease;
 }
 .btn:hover {
+    background: linear-gradient(135deg, #5FABFF, #3476F5);
     transform: translateY(-2px);
     box-shadow: 0 6px 18px rgba(43, 110, 242, 0.4);
 }
 .btn:active { transform: scale(0.97); }
 
+/* --- SECONDARY BUTTONS (Menu & Shuffle) --- */
 .btn-secondary {
     background: rgba(255, 255, 255, 0.15);
     color: white;
@@ -81,6 +81,9 @@ body {
     background: rgba(255, 255, 255, 0.25);
     transform: translateY(-2px);
 }
+.btn-secondary:active {
+    transform: scale(0.97);
+}
 
 /* --- MAIN MENU --- */
 #game-menu {
@@ -93,7 +96,7 @@ body {
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.25);
     border-radius: 20px;
-    padding: 40px 55px;
+    padding: 45px 55px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
     animation: zoomInFade 0.8s ease-out;
 }
@@ -103,7 +106,7 @@ body {
     margin-bottom: 10px;
 }
 #game-menu h1 {
-    font-size: 2.3rem;
+    font-size: 2.5rem;
     font-weight: 900;
     color: white;
     margin-bottom: 25px;
@@ -126,11 +129,12 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: min(340px, 90vw);
+    width: 330px;
+    max-width: 90vw;
     margin-bottom: 14px;
 }
 #back-to-menu-button, #shuffle-button {
-    width: 47%;
+    width: 45%;
 }
 
 /* --- PUZZLE BOARD --- */
@@ -201,7 +205,10 @@ body {
 /* --- HOW TO PLAY MODAL --- */
 #modal-overlay {
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: rgba(0, 0, 0, 0.55);
     display: flex;
     justify-content: center;
@@ -217,12 +224,13 @@ body {
 }
 #modal-content {
     background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(25px);
+    backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.25);
-    padding: 30px 35px;
+    padding: 35px 40px;
     border-radius: 16px;
     width: 90%;
     max-width: 380px;
+    position: relative;
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     text-align: center;
     transform: scale(0.9);
@@ -237,7 +245,8 @@ body {
     font-size: 1.5rem;
     font-weight: 800;
     color: white;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 #modal-close-button {
     position: absolute;
@@ -248,6 +257,7 @@ body {
     background: none;
     border: none;
     cursor: pointer;
+    transition: color 0.2s ease;
 }
 #modal-close-button:hover { color: white; }
 
@@ -257,6 +267,18 @@ body {
     gap: 18px;
     margin-bottom: 25px;
     text-align: left;
+}
+.step {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+.step-icon {
+    font-size: 1.4rem;
+    color: white;
+    width: 24px;
+    text-align: center;
+    opacity: 0.9;
 }
 .step-text h4 {
     margin: 0;
@@ -277,7 +299,10 @@ body {
 /* --- WIN MODAL --- */
 #win-modal-overlay {
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: rgba(0, 0, 0, 0.55);
     display: flex;
     justify-content: center;
@@ -293,9 +318,9 @@ body {
 }
 #win-modal-content {
     background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(25px);
+    backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.25);
-    padding: 30px 35px;
+    padding: 35px 40px;
     border-radius: 16px;
     width: 90%;
     max-width: 360px;
@@ -326,53 +351,78 @@ body {
 /* --- CONFETTI CANVAS --- */
 #confetti-canvas {
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     pointer-events: none;
     z-index: 2500;
 }
 
-/* --- RESPONSIVE ADJUSTMENTS --- */
+/* --- RESPONSIVE DESIGN --- */
 @media (max-width: 768px) {
     #game-menu {
-        padding: 30px;
+        padding: 30px 35px;
         width: 90%;
     }
     #game-menu h1 {
         font-size: 2rem;
     }
+    #menu-logo {
+        width: 100px;
+        height: 100px;
+    }
+    .game-header {
+        width: 90vw;
+        gap: 8px;
+    }
+    #back-to-menu-button, #shuffle-button {
+        font-size: 0.9rem;
+        padding: 10px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
     #puzzle-board {
         width: 90vw;
         height: 90vw;
     }
+    #game-menu h1 {
+        font-size: 1.8rem;
+    }
+    #start-game-button, #how-to-play-button {
+        width: 90%;
+        font-size: 0.95rem;
+    }
+    .btn, .btn-secondary {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
     #modal-content, #win-modal-content {
-        width: 88%;
-        padding: 25px;
+        padding: 25px 30px;
     }
     #modal-content h3, #win-modal-content h2 {
         font-size: 1.3rem;
     }
 }
 
-@media (max-width: 480px) {
-    #game-menu {
-        width: 90%;
-        padding: 25px;
-    }
-    #menu-logo {
-        width: 100px;
-        height: 100px;
-    }
-    #start-game-button, #how-to-play-button {
-        width: 90%;
-    }
-    #modal-content, #win-modal-content {
-        width: 92%;
-        padding: 20px;
-    }
+/* --- ANIMATIONS --- */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-/* --- ANIMATIONS --- */
+/* --- MENU ZOOM-FADE ENTRANCE --- */
 @keyframes zoomInFade {
-    from { opacity: 0; transform: scale(0.85); }
-    to { opacity: 1; transform: scale(1); }
+    from {
+        opacity: 0;
+        transform: scale(0.85);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
