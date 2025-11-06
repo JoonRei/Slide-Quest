@@ -304,6 +304,10 @@ body {
         border-radius: 14px;   /* softer corners for smaller screens */
         max-width: none;       /* allow it to scale naturally */
     }
+    #win-modal-content {
+        padding: 30px 35px;
+        width: 70%;
+    }
 
     #modal-content h3 {
         font-size: 1.2rem;     /* slightly smaller title */
@@ -456,6 +460,7 @@ body {
         transform: scale(1);
     }
 }
+
 
 
 
