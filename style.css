@@ -283,8 +283,18 @@ body {
     padding: 10px 25px; /* Slightly smaller button */
     font-size: 1.1rem; /* Smaller font for the button */
 }
+/* --- Fade-in animation for the final revealed tile --- */
+@keyframes fadeInTile {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.tile.reveal {
+    animation: fadeInTile 0.4s ease-out forwards;
+}
 
 #modal-got-it-button:hover {
     background-color: #2cb984;
 }
+
 
