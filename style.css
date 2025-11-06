@@ -296,6 +296,36 @@ body {
     width: 100%;
 }
 
+/* --- MOBILE-ONLY ADJUSTMENTS FOR HOW TO PLAY MODAL --- */
+@media (max-width: 480px) {
+    #modal-content {
+        width: 92%;            /* ensures a bit of space on both sides */
+        padding: 24px 20px;    /* balanced spacing inside the modal */
+        border-radius: 14px;   /* softer corners for smaller screens */
+        max-width: none;       /* allow it to scale naturally */
+    }
+
+    #modal-content h3 {
+        font-size: 1.2rem;     /* slightly smaller title */
+        margin-bottom: 18px;
+    }
+
+    .modal-steps {
+        gap: 14px;             /* tighter vertical spacing */
+        margin-bottom: 18px;
+    }
+
+    .step-text p {
+        font-size: 0.85rem;    /* smaller body text for readability */
+    }
+
+    #modal-got-it-button {
+        font-size: 0.9rem;
+        padding: 10px 0;
+    }
+}
+
+
 /* --- WIN MODAL --- */
 #win-modal-overlay {
     position: fixed;
@@ -426,3 +456,4 @@ body {
         transform: scale(1);
     }
 }
+
