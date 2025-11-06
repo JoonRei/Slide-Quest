@@ -7,17 +7,19 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
-    
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+    <!-- SPLASH SCREEN -->
     <div id="splash-screen">
         <img id="game-logo" src="slide_quest_logo.png" alt="Slide Quest Logo">
     </div>
 
+    <!-- MAIN MENU -->
     <div id="game-menu" class="hidden">
         <img id="menu-logo" src="slide_quest_logo.png" alt="Slide Quest Logo">
         <h1>Slide Quest</h1>
@@ -25,6 +27,7 @@
         <button id="how-to-play-button" class="btn">How to Play</button>
     </div>
 
+    <!-- GAME CONTAINER -->
     <div id="game-container" class="hidden">
         <div class="game-header">
             <button id="back-to-menu-button" class="btn btn-secondary">&larr; Menu</button>
@@ -33,50 +36,52 @@
         <div id="puzzle-board"></div>
     </div>
 
+    <!-- HOW TO PLAY MODAL -->
     <div id="modal-overlay"> 
         <div id="modal-content">
             <button id="modal-close-button">&times;</button>
             <h3>How to Play</h3>
             
-            <div class="modal-steps"> <div class="step">
-                    <div class="step-icon"><i class="fas fa-mouse-pointer"></i></div>
+            <div class="modal-steps">
+                <div class="step">
+                    <div class="step-icon"><i class="fas fa-hand-pointer"></i></div>
                     <div class="step-text">
-                        <h4>Click to Move</h4>
-                        <p>Click any tile that is next to the empty space to slide it over.</p>
+                        <h4>Swipe or Drag</h4>
+                        <p>Move any tile that’s next to the empty space by swiping or dragging it.</p>
                     </div>
                 </div>
                 <div class="step">
                     <div class="step-icon"><i class="fas fa-bullseye"></i></div>
                     <div class="step-text">
-                        <h4>Solve the Puzzle</h4>
-                        <p>Your goal is to rearrange all the tiles to form the complete picture.</p>
+                        <h4>Form the Complete Picture</h4>
+                        <p>Slide tiles until the full image is restored correctly.</p>
                     </div>
                 </div>
                 <div class="step">
-                    <div class="step-icon"><i class="fas fa-shuffle"></i></div> <div class="step-text">
+                    <div class="step-icon"><i class="fas fa-shuffle"></i></div>
+                    <div class="step-text">
                         <h4>Shuffle Anytime</h4>
-                        <p>Click the "Shuffle" button to restart with a new, scrambled puzzle.</p>
+                        <p>Use the "Shuffle" button to start with a new challenge!</p>
                     </div>
                 </div>
             </div>
 
-            <!-- WIN MODAL -->
-<div id="win-modal-overlay">
-    <div id="win-modal-content">
-        <h2>🎉 Puzzle Complete!</h2>
-        <p>You’ve successfully solved the puzzle!</p>
-        <button id="play-again-button" class="btn">Play Again</button>
-    </div>
-</div>
-
-
             <button id="modal-got-it-button" class="btn">Got it!</button>
-
         </div>
     </div>
 
+    <!-- WIN MODAL -->
+    <div id="win-modal-overlay">
+        <div id="win-modal-content">
+            <h2>🎉 Puzzle Complete!</h2>
+            <p>You’ve successfully solved the puzzle!</p>
+            <button id="play-again-button" class="btn">Play Again</button>
+        </div>
+    </div>
+
+    <!-- CONFETTI CANVAS -->
+    <canvas id="confetti-canvas"></canvas>
+
     <script src="script.js"></script>
-
 </body>
-
 </html>
