@@ -83,18 +83,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function drawBoard() {
-        board.style.width = `${gridSize * tileSize + boardPadding * 2}px`;
-        board.style.height = `${gridSize * tileSize + boardPadding * 2}px`;
-        
-        tiles.forEach((tile, logicalIndex) => {
-            const physicalIndex = tiles.findIndex(item => item.originalIndex === logicalIndex);
-            const col = physicalIndex % gridSize;
-            const row = Math.floor(physicalIndex / gridSize);
+    board.style.width = `${gridSize * tileSize + boardPadding * 2}px`;
+    board.style.height = `${gridSize * tileSize + boardPadding * 2}px`;
 
-            tile.element.style.top = `${row * tileSize + boardPadding}px`;
-            tile.element.style.left = `${col * tileSize + boardPadding}px`;
-        });
-    }
+    tiles.forEach((tile, i) => {
+        const col = i % gridSize;
+        const row = Math.floor(i / gridSize);
+        tile.element.style.top = `${row * tileSize + boardPadding}px`;
+        tile.element.style.left = `${col * tileSize + boardPadding}px`;
+    });
+}
+
 
     // --- GAME LOGIC ---
     function swapTilesAndDraw(tile1PhysicalIndex, tile2PhysicalIndex) {
@@ -259,3 +258,4 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- STARTUP ---
     showSplashScreen();
 });
+
