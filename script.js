@@ -26,9 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const solvedState = [0, 1, 2, 3, 4, 5, 6, 7, 8];
     const emptyTileIndex = 8; // The 9th tile (index 8) is empty
 
-    // --- TAP/TOUCH STATE ---
-    let touchedTile = null;
-
     // --- SCREEN MANAGEMENT ---
     function showSplashScreen() {
         splashScreen.classList.remove('hidden');
@@ -99,15 +96,19 @@ document.addEventListener('DOMContentLoaded', () => {
         checkWin();
     }
 
+    // This function is the core of the logic.
     function canMove(clickedIndex, emptyIndex) {
+        // Check for same row, 1 column apart
         const sameRow = Math.floor(clickedIndex / gridSize) === Math.floor(emptyIndex / gridSize);
         if (sameRow && Math.abs(clickedIndex - emptyIndex) === 1) {
             return true;
         }
+        // Check for same column, 1 row apart
         const sameCol = (clickedIndex % gridSize) === (emptyIndex % gridSize);
         if (sameCol && Math.abs(clickedIndex - emptyIndex) === gridSize) {
             return true;
         }
+        // Not adjacent
         return false;
     }
     
@@ -146,63 +147,39 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 300);
     }
 
-    // --- SIMPLIFIED TAP/CLICK EVENT HANDLERS ---
-
-    // When the user first presses down
-    function onPointerDown(e) {
+    // --- NEW: SIMPLIFIED CLICK/TAP HANDLER ---
+    function onTileClick(e) {
+        // Find the tile element that was clicked
         const targetTileElement = e.target.closest('.tile');
 
-        if (targetTileElement && !targetTileElement.classList.contains('empty')) {
-            // Store the tile they touched
-            touchedTile = tiles.find(t => t.element === targetTileElement);
-        }
-        // Prevent default behavior (like text selection)
-        e.preventDefault();
-    }
-
-    // When the user lifts their finger/mouse
-    function onPointerUp(e) {
-        // If they didn't start on a valid tile, do nothing
-        if (!touchedTile) return;
-
-        // Check if the tile they *released* on is the same as the one they started on
-        // This confirms it was a "tap" or "click" and not a long drag off-screen
-        const targetTileElement = e.target.closest('.tile');
-        if (targetTileElement === touchedTile.element) {
-            // It's a valid tap! Handle the move.
-            handleMoveAttempt(touchedTile);
+        // If they clicked the board, or the empty space, do nothing
+        if (!targetTileElement || targetTileElement.classList.contains('empty')) {
+            return;
         }
 
-        // Reset the state for the next tap
-        touchedTile = null;
-    }
+        // Find the tile object from the element
+        const tappedTile = tiles.find(t => t.element === targetTileElement);
+        if (!tappedTile) return;
 
-    // This is the core logic you described
-    function handleMoveAttempt(tileToMove) {
-        const tappedPhysicalIndex = tiles.findIndex(t => t.originalIndex === tileToMove.originalIndex);
+        // Find the current positions
+        const tappedPhysicalIndex = tiles.findIndex(t => t.originalIndex === tappedTile.originalIndex);
         const emptyPhysicalIndex = tiles.findIndex(t => t.originalIndex === emptyTileIndex);
 
-        // Check: Can this tile move?
+        // Check: Can this tile move? (Is it adjacent to the empty space?)
         if (canMove(tappedPhysicalIndex, emptyPhysicalIndex)) {
             // Yes. Swap it.
             swapTilesAndDraw(tappedPhysicalIndex, emptyPhysicalIndex);
         }
-        // If not, nothing happens, just as you described.
+        // If not, nothing happens.
     }
-
 
     // --- INITIALIZE ALL ---
     function initGame() {
         scramble();
 
-        // Add the new, simplified listeners to the board
-        // 'mousedown' is for desktop, 'touchstart' is for mobile
-        board.addEventListener('mousedown', onPointerDown);
-        board.addEventListener('touchstart', onPointerDown, { passive: false });
-
-        // 'mouseup' is for desktop, 'touchend' is for mobile
-        board.addEventListener('mouseup', onPointerUp);
-        board.addEventListener('touchend', onPointerUp);
+        // REMOVED all pointer/touch/swipe listeners
+        // ADDED one simple, reliable click listener
+        board.addEventListener('click', onTileClick);
     }
 
     // --- EVENT LISTENERS ---
