@@ -26,7 +26,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const solvedState = [0, 1, 2, 3, 4, 5, 6, 7, 8];
     const emptyTileIndex = 8; // The 9th tile (index 8) is empty
 
-    // --- DRAG/SWIPE STATE ---
+    // --- NEW: DRAG & SWIPE STATE ---
+    let startX = 0;
+    let startY = 0;
     let draggedTile = null;
 
     // --- SCREEN MANAGEMENT ---
@@ -163,38 +165,93 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // --- SWIPE/DRAG EVENT HANDLERS (THE FIX) ---
+    // --- SWIPE/DRAG EVENT HANDLERS ---
 
     function onDragStart(e) {
-        // Find the tile element that was touched
+        // Find the tile element that was clicked
         const targetTileElement = e.target.closest('.tile');
 
-        // If it's a valid, non-empty tile, record it as the one being dragged
         if (targetTileElement && !targetTileElement.classList.contains('empty')) {
+            // Find this tile in our `tiles` array
             draggedTile = tiles.find(t => t.element === targetTileElement);
-            // Prevent default browser behavior (like scrolling or image drag)
-            e.preventDefault();
+            if (!draggedTile) return;
+
+            // Get start coordinates
+            if (e.type === 'mousedown') {
+                startX = e.clientX;
+                startY = e.clientY;
+            } else if (e.type === 'touchstart') {
+                startX = e.touches[0].clientX;
+                startY = e.touches[0].clientY;
+            }
+            e.preventDefault(); // Prevent text selection or image dragging
         }
     }
 
     function onDragEnd(e) {
-        // If we aren't dragging a valid tile, do nothing
-        if (!draggedTile) return;
+        if (!draggedTile) return; // We weren't dragging a valid tile
 
-        // We don't care about swipe direction.
-        // A completed drag/touch on a tile is an "intent to move".
+        let endX = 0;
+        let endY = 0;
 
+        // Get end coordinates
+        if (e.type === 'mouseup') {
+            endX = e.clientX;
+            endY = e.clientY;
+        } else if (e.type === 'touchend') {
+            // Make sure there is a touch to read
+            if (e.changedTouches && e.changedTouches.length > 0) {
+                endX = e.changedTouches[0].clientX;
+                endY = e.changedTouches[0].clientY;
+            } else {
+                // Fallback if touchend is weird
+                draggedTile = null;
+                return;
+            }
+        }
+
+        // Calculate the difference
+        const diffX = endX - startX;
+        const diffY = endY - startY;
+        // Lowered threshold for better mobile sensitivity
+        const swipeThreshold = 30; 
+
+        let direction = null;
+
+        // Check for horizontal swipe
+        if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > swipeThreshold) {
+            direction = (diffX > 0) ? 'right' : 'left';
+        } 
+        // Check for vertical swipe
+        else if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > swipeThreshold) {
+            direction = (diffY > 0) ? 'down' : 'up';
+        }
+
+        if (direction) {
+            handleSwipe(direction);
+        }
+
+        // Reset drag state
+        draggedTile = null;
+    }
+
+    function handleSwipe(direction) {
         const draggedPhysicalIndex = tiles.findIndex(t => t.originalIndex === draggedTile.originalIndex);
         const emptyPhysicalIndex = tiles.findIndex(t => t.originalIndex === emptyTileIndex);
 
-        // Check: Can this tile move? (Is it adjacent to the empty space?)
-        if (canMove(draggedPhysicalIndex, emptyPhysicalIndex)) {
-            // Yes. Swap it.
+        // Check if the empty space is in the direction the user swiped
+        if (direction === 'left' && canMove(draggedPhysicalIndex, emptyPhysicalIndex) && emptyPhysicalIndex === draggedPhysicalIndex - 1) {
             swapTilesAndDraw(draggedPhysicalIndex, emptyPhysicalIndex);
         }
-        
-        // Reset drag state regardless of whether the move was valid
-        draggedTile = null;
+        else if (direction === 'right' && canMove(draggedPhysicalIndex, emptyPhysicalIndex) && emptyPhysicalIndex === draggedPhysicalIndex + 1) {
+            swapTilesAndDraw(draggedPhysicalIndex, emptyPhysicalIndex);
+        }
+        else if (direction === 'up' && canMove(draggedPhysicalIndex, emptyPhysicalIndex) && emptyPhysicalIndex === draggedPhysicalIndex - gridSize) {
+            swapTilesAndDraw(draggedPhysicalIndex, emptyPhysicalIndex);
+        }
+        else if (direction === 'down' && canMove(draggedPhysicalIndex, emptyPhysicalIndex) && emptyPhysicalIndex === draggedPhysicalIndex + gridSize) {
+            swapTilesAndDraw(draggedPhysicalIndex, emptyPhysicalIndex);
+        }
     }
 
 
