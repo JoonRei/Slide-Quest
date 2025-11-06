@@ -212,25 +212,37 @@ document.addEventListener('DOMContentLoaded', () => {
         draggedTile = null;
     }
 
-    function handleSwipe(direction) {
-        const draggedPhysicalIndex = tiles.findIndex(t => t.originalIndex === draggedTile.originalIndex);
-        const emptyPhysicalIndex = tiles.findIndex(t => t.originalIndex === emptyTileIndex);
-        const diff = emptyPhysicalIndex - draggedPhysicalIndex;
+   function handleSwipe(direction) {
+    const draggedPhysicalIndex = tiles.findIndex(t => t.originalIndex === draggedTile.originalIndex);
+    const emptyPhysicalIndex = tiles.findIndex(t => t.originalIndex === emptyTileIndex);
 
-        // Ensure empty space is exactly in the swipe direction
-        if (direction === 'left' && diff === -1) {
-            swapTilesAndDraw(draggedPhysicalIndex, emptyPhysicalIndex);
-        } 
-        else if (direction === 'right' && diff === 1) {
-            swapTilesAndDraw(draggedPhysicalIndex, emptyPhysicalIndex);
-        } 
-        else if (direction === 'up' && diff === -gridSize) {
-            swapTilesAndDraw(draggedPhysicalIndex, emptyPhysicalIndex);
-        } 
-        else if (direction === 'down' && diff === gridSize) {
-            swapTilesAndDraw(draggedPhysicalIndex, emptyPhysicalIndex);
-        }
+    // Compute current row/col of both
+    const draggedRow = Math.floor(draggedPhysicalIndex / gridSize);
+    const draggedCol = draggedPhysicalIndex % gridSize;
+    const emptyRow = Math.floor(emptyPhysicalIndex / gridSize);
+    const emptyCol = emptyPhysicalIndex % gridSize;
+
+    // Check adjacency
+    const isLeft  = (draggedRow === emptyRow && draggedCol === emptyCol + 1);
+    const isRight = (draggedRow === emptyRow && draggedCol === emptyCol - 1);
+    const isUp    = (draggedCol === emptyCol && draggedRow === emptyRow + 1);
+    const isDown  = (draggedCol === emptyCol && draggedRow === emptyRow - 1);
+
+    // Apply the movement only if direction matches adjacency
+    if (direction === 'left' && isLeft) {
+        swapTilesAndDraw(draggedPhysicalIndex, emptyPhysicalIndex);
     }
+    else if (direction === 'right' && isRight) {
+        swapTilesAndDraw(draggedPhysicalIndex, emptyPhysicalIndex);
+    }
+    else if (direction === 'up' && isUp) {
+        swapTilesAndDraw(draggedPhysicalIndex, emptyPhysicalIndex);
+    }
+    else if (direction === 'down' && isDown) {
+        swapTilesAndDraw(draggedPhysicalIndex, emptyPhysicalIndex);
+    }
+}
+
 
     // --- INITIALIZE ALL ---
     function initGame() {
@@ -259,3 +271,4 @@ document.addEventListener('DOMContentLoaded', () => {
     // Start by showing splash screen
     showSplashScreen();
 });
+
