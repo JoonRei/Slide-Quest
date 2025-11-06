@@ -26,10 +26,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const solvedState = [0, 1, 2, 3, 4, 5, 6, 7, 8];
     const emptyTileIndex = 8; // The 9th tile (index 8) is empty
 
-    // --- NEW: DRAG & SWIPE STATE ---
+    // --- SWIPE STATE (No longer tracks a specific tile) ---
     let startX = 0;
     let startY = 0;
-    let draggedTile = null;
 
     // --- SCREEN MANAGEMENT ---
     function showSplashScreen() {
@@ -64,7 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- GAME SETUP FUNCTIONS ---
-
     function createTile(index) {
         const tile = document.createElement('div');
         tile.classList.add('tile');
@@ -73,14 +71,11 @@ document.addEventListener('DOMContentLoaded', () => {
             tile.classList.add('empty');
             return tile;
         }
-
         const col = index % gridSize;
         const row = Math.floor(index / gridSize);
         const bgPosX = col * (100 / (gridSize - 1));
         const bgPosY = row * (100 / (gridSize - 1));
-        
         tile.style.backgroundPosition = `${bgPosX}% ${bgPosY}%`;
-        // No click listener, we use drag/touch events on the board
         return tile;
     }
 
@@ -92,18 +87,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const physicalIndex = tiles.findIndex(item => item.originalIndex === logicalIndex);
             const col = physicalIndex % gridSize;
             const row = Math.floor(physicalIndex / gridSize);
-
             tile.element.style.top = `${row * tileSize + boardPadding}px`;
             tile.element.style.left = `${col * tileSize + boardPadding}px`;
         });
     }
 
     // --- GAME LOGIC ---
-
     function swapTilesAndDraw(tile1PhysicalIndex, tile2PhysicalIndex) {
         [tiles[tile1PhysicalIndex], tiles[tile2PhysicalIndex]] = 
         [tiles[tile2PhysicalIndex], tiles[tile1PhysicalIndex]];
-        
         drawBoard();
         checkWin();
     }
@@ -122,28 +114,21 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function scramble() {
         board.innerHTML = ''; 
-        
         tiles = solvedState.map(originalIndex => ({
             originalIndex: originalIndex,
             element: createTile(originalIndex)
         }));
-
-        tiles.forEach(tile => {
-            board.appendChild(tile.element);
-        });
+        tiles.forEach(tile => { board.appendChild(tile.element); });
 
         let shuffles = 50;
         for (let i = 0; i < shuffles; i++) {
             const emptyPhysicalIndex = tiles.findIndex(item => item.originalIndex === emptyTileIndex);
             const neighbors = [];
-            
             if (canMove(emptyPhysicalIndex - 1, emptyPhysicalIndex)) neighbors.push(emptyPhysicalIndex - 1);
             if (canMove(emptyPhysicalIndex + 1, emptyPhysicalIndex)) neighbors.push(emptyPhysicalIndex + 1);
             if (canMove(emptyPhysicalIndex - gridSize, emptyPhysicalIndex)) neighbors.push(emptyPhysicalIndex - gridSize);
             if (canMove(emptyPhysicalIndex + gridSize, emptyPhysicalIndex)) neighbors.push(emptyPhysicalIndex + gridSize);
-
             const randomNeighborIndex = neighbors[Math.floor(Math.random() * neighbors.length)];
-            
             if (randomNeighborIndex >= 0 && randomNeighborIndex < tiles.length) {
                  [tiles[emptyPhysicalIndex], tiles[randomNeighborIndex]] = 
                  [tiles[randomNeighborIndex], tiles[emptyPhysicalIndex]];
@@ -154,9 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function checkWin() {
         for (let i = 0; i < tiles.length; i++) {
-            if (tiles[i].originalIndex !== i) {
-                return;
-            }
+            if (tiles[i].originalIndex !== i) { return; }
         }
         setTimeout(() => {
             alert('Congratulations, you solved it!');
@@ -164,33 +147,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 300);
     }
 
-
-    // --- SWIPE/DRAG EVENT HANDLERS ---
-
+    // --- NEW: SWIPE/DRAG EVENT HANDLERS ---
     function onDragStart(e) {
-        // Find the tile element that was clicked
-        const targetTileElement = e.target.closest('.tile');
-
-        if (targetTileElement && !targetTileElement.classList.contains('empty')) {
-            // Find this tile in our `tiles` array
-            draggedTile = tiles.find(t => t.element === targetTileElement);
-            if (!draggedTile) return;
-
-            // Get start coordinates
-            if (e.type === 'mousedown') {
-                startX = e.clientX;
-                startY = e.clientY;
-            } else if (e.type === 'touchstart') {
-                startX = e.touches[0].clientX;
-                startY = e.touches[0].clientY;
-            }
-            e.preventDefault(); // Prevent text selection or image dragging
+        // Record the start position of the swipe
+        if (e.type === 'mousedown') {
+            startX = e.clientX;
+            startY = e.clientY;
+        } else if (e.type === 'touchstart') {
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
         }
+        // Prevent default screen scrolling on touch
+        e.preventDefault();
     }
 
     function onDragEnd(e) {
-        if (!draggedTile) return; // We weren't dragging a valid tile
-
         let endX = 0;
         let endY = 0;
 
@@ -199,22 +170,18 @@ document.addEventListener('DOMContentLoaded', () => {
             endX = e.clientX;
             endY = e.clientY;
         } else if (e.type === 'touchend') {
-            // Make sure there is a touch to read
             if (e.changedTouches && e.changedTouches.length > 0) {
                 endX = e.changedTouches[0].clientX;
                 endY = e.changedTouches[0].clientY;
             } else {
-                // Fallback if touchend is weird
-                draggedTile = null;
-                return;
+                return; // Not a valid touch end
             }
         }
 
         // Calculate the difference
         const diffX = endX - startX;
         const diffY = endY - startY;
-        // Lowered threshold for better mobile sensitivity
-        const swipeThreshold = 30; 
+        const swipeThreshold = 30; // Minimum pixels swiped to count
 
         let direction = null;
 
@@ -230,30 +197,41 @@ document.addEventListener('DOMContentLoaded', () => {
         if (direction) {
             handleSwipe(direction);
         }
-
-        // Reset drag state
-        draggedTile = null;
     }
 
+    // THIS IS THE NEW LOGIC
     function handleSwipe(direction) {
-        const draggedPhysicalIndex = tiles.findIndex(t => t.originalIndex === draggedTile.originalIndex);
         const emptyPhysicalIndex = tiles.findIndex(t => t.originalIndex === emptyTileIndex);
+        let targetPhysicalIndex = -1;
 
-        // Check if the empty space is in the direction the user swiped
-        if (direction === 'left' && canMove(draggedPhysicalIndex, emptyPhysicalIndex) && emptyPhysicalIndex === draggedPhysicalIndex - 1) {
-            swapTilesAndDraw(draggedPhysicalIndex, emptyPhysicalIndex);
+        // We swiped Left, so we want the empty space to move Left.
+        // This means the TILE TO THE RIGHT (index + 1) moves into the empty space.
+        if (direction === 'left') {
+            targetPhysicalIndex = emptyPhysicalIndex + 1;
         }
-        else if (direction === 'right' && canMove(draggedPhysicalIndex, emptyPhysicalIndex) && emptyPhysicalIndex === draggedPhysicalIndex + 1) {
-            swapTilesAndDraw(draggedPhysicalIndex, emptyPhysicalIndex);
+        // We swiped Right, so we want the empty space to move Right.
+        // This means the TILE TO THE LEFT (index - 1) moves into the empty space.
+        else if (direction === 'right') {
+            targetPhysicalIndex = emptyPhysicalIndex - 1;
         }
-        else if (direction === 'up' && canMove(draggedPhysicalIndex, emptyPhysicalIndex) && emptyPhysicalIndex === draggedPhysicalIndex - gridSize) {
-            swapTilesAndDraw(draggedPhysicalIndex, emptyPhysicalIndex);
+        // We swiped Up, so we want the empty space to move Up.
+        // This means the TILE BELOW (index + 3) moves into the empty space.
+        else if (direction === 'up') {
+            targetPhysicalIndex = emptyPhysicalIndex + gridSize;
         }
-        else if (direction === 'down' && canMove(draggedPhysicalIndex, emptyPhysicalIndex) && emptyPhysicalIndex === draggedPhysicalIndex + gridSize) {
-            swapTilesAndDraw(draggedPhysicalIndex, emptyPhysicalIndex);
+        // We swiped Down, so we want the empty space to move Down.
+        // This means the TILE ABOVE (index - 3) moves into the empty space.
+        else if (direction === 'down') {
+            targetPhysicalIndex = emptyPhysicalIndex - gridSize;
+        }
+
+        // Check if the target tile is valid and can move
+        if (targetPhysicalIndex >= 0 && targetPhysicalIndex < (gridSize * gridSize)) {
+            if (canMove(targetPhysicalIndex, emptyPhysicalIndex)) {
+                swapTilesAndDraw(targetPhysicalIndex, emptyPhysicalIndex);
+            }
         }
     }
-
 
     // --- INITIALIZE ALL ---
     function initGame() {
@@ -278,15 +256,12 @@ document.addEventListener('DOMContentLoaded', () => {
     howToPlayButton.addEventListener('click', () => {
         modalOverlay.classList.add('active');
     });
-
     modalCloseButton.addEventListener('click', () => {
         modalOverlay.classList.remove('active');
     });
-
     modalGotItButton.addEventListener('click', () => {
         modalOverlay.classList.remove('active');
     });
-
     modalOverlay.addEventListener('click', (event) => {
         if (event.target === modalOverlay) { 
             modalOverlay.classList.remove('active');
