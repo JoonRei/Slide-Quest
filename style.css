@@ -393,7 +393,7 @@ body {
 @media (max-width: 768px) {
     #game-menu {
         padding: 30px 35px;
-        width: 90%;
+        width: 70%;
     }
     #game-menu h1 {
         font-size: 2rem;
@@ -456,6 +456,7 @@ body {
         transform: scale(1);
     }
 }
+
 
 
 
