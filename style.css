@@ -12,7 +12,6 @@ body {
     margin: 0;
     color: #222;
     overflow-x: hidden;
-    overflow-y: hidden; /* Prevent scroll on mobile */
 }
 
 /* --- UTILITIES --- */
@@ -93,12 +92,7 @@ body {
     align-items: center;
     justify-content: center;
     text-align: center;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    border-radius: 20px;
     padding: 45px 55px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
     animation: zoomInFade 0.8s ease-out;
 }
 #menu-logo {
@@ -130,7 +124,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 330px;
+    width: 310px;
     max-width: 90vw;
     margin-bottom: 14px;
 }
@@ -218,7 +212,6 @@ body {
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease;
-    padding: 15px; /* Ensure space around modal on small screens */
 }
 #modal-overlay.active {
     opacity: 1;
@@ -230,8 +223,8 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.25);
     padding: 35px 40px;
     border-radius: 16px;
-    width: 85%;
-    max-width: 360px;
+    width: 90%;
+    max-width: 380px;
     position: relative;
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     text-align: center;
@@ -313,7 +306,6 @@ body {
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.4s ease, visibility 0.4s ease;
-    padding: 15px; /* Ensure breathing space */
 }
 #win-modal-overlay.active {
     opacity: 1;
@@ -325,7 +317,7 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.25);
     padding: 35px 40px;
     border-radius: 16px;
-    width: 85%;
+    width: 90%;
     max-width: 360px;
     text-align: center;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
@@ -383,10 +375,6 @@ body {
         font-size: 0.9rem;
         padding: 10px 0;
     }
-    #modal-content, #win-modal-content {
-        width: 90%;
-        padding: 25px 28px;
-    }
 }
 
 @media (max-width: 480px) {
@@ -409,8 +397,7 @@ body {
         font-size: 0.9rem;
     }
     #modal-content, #win-modal-content {
-        width: 92%;
-        padding: 22px 24px;
+        padding: 25px 30px;
     }
     #modal-content h3, #win-modal-content h2 {
         font-size: 1.3rem;
