@@ -299,7 +299,7 @@ body {
 /* --- MOBILE-ONLY ADJUSTMENTS FOR HOW TO PLAY MODAL --- */
 @media (max-width: 480px) {
     #modal-content {
-        width: 92%;            /* ensures a bit of space on both sides */
+        width: 80%;            /* ensures a bit of space on both sides */
         padding: 24px 20px;    /* balanced spacing inside the modal */
         border-radius: 14px;   /* softer corners for smaller screens */
         max-width: none;       /* allow it to scale naturally */
@@ -456,4 +456,5 @@ body {
         transform: scale(1);
     }
 }
+
 
