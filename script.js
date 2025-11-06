@@ -166,12 +166,12 @@ document.addEventListener('DOMContentLoaded', () => {
         tile.style.backgroundPosition = `${bgPosX}% ${bgPosY}%`;
     }
 
-    // Small delay for animation before showing popup
+    // After a short delay, show the custom win modal
     setTimeout(() => {
-        alert('🎉 Congratulations! You solved it!');
-        showGameMenu();
-    }, 1000); // allow time for the fade-in animation
+        document.getElementById('win-modal-overlay').classList.add('active');
+    }, 800);
 }
+
 
 
     // --- DRAG / SWIPE HANDLERS ---
@@ -276,6 +276,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- STARTUP ---
     showSplashScreen();
+});
+
+// --- WIN MODAL HANDLER ---
+const winModal = document.getElementById('win-modal-overlay');
+const playAgainButton = document.getElementById('play-again-button');
+
+playAgainButton.addEventListener('click', () => {
+    winModal.classList.remove('active');
+    showGame(); // Start a new game immediately
 });
 
 
