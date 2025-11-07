@@ -41,20 +41,26 @@ body {
 #game-logo {
     width: 200px;
     height: 200px;
-    animation: fadeInLogo 1.8s ease-out forwards;
+    opacity: 0;
+    transform: scale(0.8);
+    animation: logoPopUp 1.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
-@keyframes fadeInLogo {
-    from {
+@keyframes logoPopUp {
+    0% {
         opacity: 0;
-        transform: scale(0.8);
+        transform: scale(0.8) translateY(30px);
     }
-
-    to {
+    60% {
+        opacity: 1;
+        transform: scale(1.05) translateY(0);
+    }
+    100% {
         opacity: 1;
         transform: scale(1);
     }
 }
+
 
 /* --- BUTTON BASE STYLE --- */
 .btn {
@@ -744,6 +750,7 @@ body {
         font-size: 0.95rem;
     }
 }
+
 
 
 
