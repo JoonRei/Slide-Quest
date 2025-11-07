@@ -665,8 +665,8 @@ body {
         width: 26px;
         height: 26px;
         font-size: 1rem;
-        top: 10px;
-        right: 10px;
+        top: 20px;
+        right: 20px;
     }
 }
 
@@ -690,4 +690,5 @@ body {
         padding: 10px;
     }
 }
+
 
