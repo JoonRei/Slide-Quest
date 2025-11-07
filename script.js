@@ -339,3 +339,25 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- STARTUP ---
     showSplashScreen();
 });
+// === PREVIEW MODAL FUNCTIONALITY ===
+const previewThumb = document.getElementById('preview-thumb');
+const previewModal = document.getElementById('preview-modal-overlay');
+const previewClose = document.getElementById('preview-modal-close');
+
+if (previewThumb) {
+    previewThumb.addEventListener('click', () => {
+        previewModal.classList.add('active');
+    });
+}
+
+if (previewClose) {
+    previewClose.addEventListener('click', () => {
+        previewModal.classList.remove('active');
+    });
+}
+
+previewModal.addEventListener('click', (e) => {
+    if (e.target === previewModal) {
+        previewModal.classList.remove('active');
+    }
+});
