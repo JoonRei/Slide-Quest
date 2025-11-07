@@ -43,19 +43,24 @@ body {
     height: 200px;
     opacity: 0;
     transform: scale(0.8);
-    animation: logoPopUp 1.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    animation: logoPopUp 2.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
 @keyframes logoPopUp {
     0% {
         opacity: 0;
-        transform: scale(0.8) translateY(30px);
+        transform: scale(0.7) translateY(40px);
         filter: drop-shadow(0 0 0 rgba(79,157,255,0));
     }
-    60% {
+    50% {
+        opacity: 0.6;
+        transform: scale(0.9) translateY(15px);
+        filter: drop-shadow(0 0 10px rgba(79,157,255,0.4));
+    }
+    80% {
         opacity: 1;
         transform: scale(1.05) translateY(0);
-        filter: drop-shadow(0 0 20px rgba(79,157,255,0.6));
+        filter: drop-shadow(0 0 25px rgba(79,157,255,0.6));
     }
     100% {
         opacity: 1;
@@ -754,6 +759,7 @@ body {
         font-size: 0.95rem;
     }
 }
+
 
 
 
