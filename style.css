@@ -419,10 +419,6 @@ body {
 
 /* --- RESPONSIVE DESIGN --- */
 @media (max-width: 768px) {
-    #game-menu {
-        padding: 30px 35px;
-        width: 90%;
-    }
 
     #win-modal-content {
         padding: 30px 35px;
@@ -688,6 +684,19 @@ body {
     #preview-modal-content {
         max-width: 280px;
         padding: 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        overflow: hidden;
+    }
+
+    #game-menu {
+        padding: 25px 25px;
+        width: 90%;
+        max-height: 100vh;
+        overflow: hidden;
     }
 }
 
