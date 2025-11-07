@@ -683,3 +683,28 @@ body {
         padding: 10px;
     }
 }
+/* --- MOBILE RESPONSIVENESS FOR HEADER BUTTONS --- */
+@media (max-width: 480px) {
+    .game-header {
+        width: 92vw;
+        gap: 8px;
+    }
+
+    #preview-container img {
+        width: 55px;
+        height: 55px;
+    }
+
+    .header-buttons {
+        gap: 6px;
+    }
+
+    .header-buttons .btn-secondary {
+        padding: 8px 10px;
+        font-size: 0.85rem;
+        flex: 1;
+        min-width: 75px; /* ensures equal width */
+        text-align: center;
+    }
+}
+
