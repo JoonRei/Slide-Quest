@@ -136,7 +136,7 @@ body {
 #menu-logo {
     width: 130px;
     height: 130px;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 
 #game-menu h1 {
@@ -759,6 +759,7 @@ body {
         font-size: 0.95rem;
     }
 }
+
 
 
 
