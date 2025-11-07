@@ -720,16 +720,6 @@ body {
         font-size: 0.85rem;
     }
 }
-/* --- RESPONSIVENESS --- */
-@media (max-width: 768px) {
-    #game-menu {
-        padding: 25px 35px;
-        width: 90%;
-        min-height: 100dvh; /* ✅ stays centered even with browser bars */
-        justify-content: center;
-        margin-top: 0; /* prevent extra space pushing it down */
-    }
-}
 
 @media (max-width: 480px) {
     #game-menu {
@@ -754,6 +744,7 @@ body {
         font-size: 0.95rem;
     }
 }
+
 
 
 
