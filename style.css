@@ -116,8 +116,6 @@ body {
     padding: 45px 55px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
     animation: zoomInFade 0.8s ease-out;
-    min-height: 100dvh; /* ✅ full dynamic viewport height (mobile safe) */
-    box-sizing: border-box;
 }
 
 #menu-logo {
@@ -737,9 +735,7 @@ body {
     #game-menu {
         padding: 20px 25px;
         width: 80%;
-        min-height: 100dvh;
         justify-content: center;
-        margin-top: 0;
     }
 
     #menu-logo {
@@ -758,6 +754,7 @@ body {
         font-size: 0.95rem;
     }
 }
+
 
 
 
