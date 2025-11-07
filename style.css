@@ -550,7 +550,7 @@ body {
 
 .header-buttons .btn-secondary {
     flex: 1;
-    padding: 8px 25px;
+    padding: 20px 25px;
     font-size: 0.9rem;
     border-radius: 10px;
 }
@@ -683,3 +683,4 @@ body {
         padding: 10px;
     }
 }
+
