@@ -496,9 +496,16 @@ body {
         width: 55px;
         height: 55px;
     }
+    .header-buttons {
+        width: 100%;
+        justify-content: center;
+        gap: 8px;
+    }
 
     .header-buttons .btn-secondary {
-        padding: 8px 12px;
+        flex: none;
+        width: 45%;
+        padding: 8px 10px;
         font-size: 0.85rem;
     }
 
@@ -550,7 +557,7 @@ body {
 
 .header-buttons .btn-secondary {
     flex: 1;
-    padding: 20px 25px;
+    padding: 8px 25px;
     font-size: 0.9rem;
     border-radius: 10px;
 }
@@ -683,4 +690,3 @@ body {
         padding: 10px;
     }
 }
-
