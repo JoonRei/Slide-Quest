@@ -486,6 +486,22 @@ body {
         font-size: 1.3rem;
     }
 
+    .game-header {
+        width: 90vw;
+        /* aligns perfectly with mobile puzzle width */
+        gap: 6px;
+    }
+
+    #preview-container img {
+        width: 55px;
+        height: 55px;
+    }
+
+    .header-buttons .btn-secondary {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    }
+
 }
 
 /* --- ANIMATIONS --- */
@@ -665,39 +681,5 @@ body {
     #preview-modal-content {
         max-width: 280px;
         padding: 10px;
-    }
-}
-@media (max-width: 480px) {
-    .game-header {
-        flex-wrap: wrap; /* allows wrapping when space is tight */
-        justify-content: center;
-        gap: 8px;
-        width: 90vw;
-    }
-
-    #preview-container {
-        order: -1; /* keep preview image first */
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        margin-bottom: 6px;
-    }
-
-    #preview-container img {
-        width: 60px;
-        height: 60px;
-    }
-
-    .header-buttons {
-        width: 100%;
-        justify-content: center;
-        gap: 8px;
-    }
-
-    .header-buttons .btn-secondary {
-        flex: none;
-        width: 45%;
-        padding: 8px 10px;
-        font-size: 0.85rem;
     }
 }
