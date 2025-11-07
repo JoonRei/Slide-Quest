@@ -193,7 +193,7 @@ body {
 .tile {
     width: 100px;
     height: 100px;
-    background-image: url('image_eb39db.jpg');
+    background-image: url('holycrosslogo.jpg');
     background-size: 300px 300px;
     border-radius: 10px;
     position: absolute;
@@ -759,6 +759,7 @@ body {
         font-size: 0.95rem;
     }
 }
+
 
 
 
