@@ -324,10 +324,11 @@ body {
 
 .step-icon {
     font-size: 1.4rem;
-    color: white;
+    background: linear-gradient(135deg, #4F9DFF, #2B6EF2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
     width: 24px;
     text-align: center;
-    opacity: 0.9;
 }
 
 .step-text h4 {
@@ -697,6 +698,35 @@ body {
         width: 90%;
         max-height: 100vh;
         overflow: hidden;
+    }
+}
+@media (max-width: 480px) {
+    #modal-content {
+        width: 70%;
+        padding: 25px 22px;
+        border-radius: 14px;
+    }
+
+    #modal-content h3 {
+        font-size: 1.3rem;
+        margin-bottom: 18px;
+    }
+
+    .modal-steps {
+        gap: 14px;
+    }
+
+    .step-icon {
+        font-size: 1.2rem;
+        width: 20px;
+    }
+
+    .step-text h4 {
+        font-size: 0.95rem;
+    }
+
+    .step-text p {
+        font-size: 0.85rem;
     }
 }
 
