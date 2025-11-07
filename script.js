@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const tile = emptyTile.element;
             tile.classList.remove('empty');
             tile.classList.add('reveal');
-            tile.style.backgroundImage = "url('image_eb39db.jpg')";
+            tile.style.backgroundImage = "url('holycrosslogo.jpg')";
             tile.style.backgroundSize = "300px 300px";
 
             const col = emptyTileIndex % gridSize;
@@ -361,3 +361,4 @@ previewModal.addEventListener('click', (e) => {
         previewModal.classList.remove('active');
     }
 });
+
