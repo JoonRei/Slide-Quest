@@ -695,7 +695,7 @@ body {
 
     #game-menu {
         padding: 25px 25px;
-        width: 90%;
+        width: 80%;
         max-height: 100vh;
         overflow: hidden;
     }
@@ -729,5 +729,6 @@ body {
         font-size: 0.85rem;
     }
 }
+
 
 
